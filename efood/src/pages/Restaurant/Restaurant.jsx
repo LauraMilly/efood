@@ -3,76 +3,112 @@ import styled from "styled-components";
 import HeaderRestaurant from "./HeaderRestaurant";
 import Footer from "../../components/Footer";
 
-
 const Page = styled.div`
   background: #fff8f2;
+  font-family: "Poppins", sans-serif;
 `;
 
 const Banner = styled.div`
-  height: 280px;
+  position: relative;
+  height: 320px;
   background-size: cover;
   background-position: center;
   display: flex;
-  align-items: flex-end;
-  padding: 32px;
 `;
 
-const BannerInfo = styled.div`
-  color: #fff;
+const Overlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+`;
+
+const BannerContent = styled.div`
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const Category = styled.span`
-  font-size: 14px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+  font-size: 30px;
+  color: #ffffff;
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
+  font-size: 35px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
 `;
 
 const Container = styled.div`
-  max-width: 1024px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 16px;
+  padding: 56px 0 80px;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  grid-template-columns: repeat(3, 360px);
+  gap: 40px;
+  justify-content: center;
 `;
 
 const Card = styled.div`
   background: #e66767;
-  color: #fff;
+  border: 6px solid #e86b6b;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: 160px;
+  height: 220px;
   object-fit: cover;
+  display: block;
 `;
 
 const Content = styled.div`
-  padding: 16px;
+  padding: 8px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 const Name = styled.h3`
-  margin-bottom: 8px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fcecdc;
 `;
 
 const Description = styled.p`
   font-size: 14px;
-  margin-bottom: 16px;
+  line-height: 20px;
+  color: #fcecdc;
+  margin: 0;
 `;
 
 const Button = styled.button`
-  background:  #fcecdc ;
-  border: 1px solid #fff;
+  margin-top: 12px;
+  background: #fcecdc;
+  border: none;
   color: #e66767;
-  padding: 8px;
+  padding: 6px 10px;
   width: 100%;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
 `;
+
 
 export default function Restaurant() {
   const { id } = useParams();
@@ -80,52 +116,46 @@ export default function Restaurant() {
   const restaurants = [
     {
       id: 1,
-      name: "Bella Tavola Italiana",
+      name: "La Dolce Vita Trattoria",
       category: "Italiana",
       banner:
-        "https://images.unsplash.com/photo-1528605248644-14dd04022da1",
+        "https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=1600&q=80",
       dishes: [
         {
           id: 1,
           name: "Ravioli al Tartufo Nero",
-          description: "Ravioli artesanal com trufas negras.",
           image:
-            "https://images.unsplash.com/photo-1544025162-d76694265947"
+            "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
         },
         {
           id: 2,
           name: "Spaghetti alla Carbonara",
-          description: "Clássico italiano com molho cremoso.",
           image:
-            "https://images.unsplash.com/photo-1588013273468-315fd88ea34c"
+            "https://images.unsplash.com/photo-1588013273468-315fd88ea34c?auto=format&fit=crop&w=800&q=80"
         },
         {
           id: 3,
           name: "Risotto ai Funghi Porcini",
-          description: "Risoto cremoso com cogumelos.",
           image:
-            "https://images.unsplash.com/photo-1603133872878-684f208fb84b"
+            "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80"
         },
         {
           id: 4,
-          name: "Frutti di Mare Linguine",
-          description: "Massa com frutos do mar.",
+          name: "Ossobuco alla Milanese",
           image:
-            "https://images.unsplash.com/photo-1551183053-bf91a1d81141"
+            "https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=800&q=80"
         },
         {
           id: 5,
           name: "Melanzane alla Parmigiana",
-          description: "Berinjela assada com parmesão.",
           image:
-            "https://images.unsplash.com/photo-1598866594230-a7c12756260f"
+            "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
         },
         {
           id: 6,
           name: "Frutti di Mare Linguine",
-          description: "Massa com frutos do mar.",
           image:
-            "https://images.unsplash.com/photo-1551183053-bf91a1d81141"
+            "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
         }
       ]
     }
@@ -134,6 +164,9 @@ export default function Restaurant() {
   const restaurant = restaurants.find(
     (item) => item.id === Number(id)
   );
+
+  const descricaoPadrao =
+    "Prato tradicional italiano preparado com ingredientes frescos e selecionados, garantindo sabor autêntico e experiência única.";
 
   if (!restaurant) {
     return (
@@ -150,18 +183,17 @@ export default function Restaurant() {
   return (
     <Page>
       <HeaderRestaurant />
-
       <Banner
         style={{
           backgroundImage: `url(${restaurant.banner})`
         }}
       >
-        <BannerInfo>
+        <Overlay />
+        <BannerContent>
           <Category>{restaurant.category}</Category>
           <Title>{restaurant.name}</Title>
-        </BannerInfo>
+        </BannerContent>
       </Banner>
-
       <Container>
         <Grid>
           {restaurant.dishes.map((dish) => (
@@ -169,14 +201,13 @@ export default function Restaurant() {
               <Image src={dish.image} alt={dish.name} />
               <Content>
                 <Name>{dish.name}</Name>
-                <Description>{dish.description}</Description>
+                <Description>{descricaoPadrao}</Description>
                 <Button>Saiba mais</Button>
               </Content>
             </Card>
           ))}
         </Grid>
       </Container>
-
       <Footer />
     </Page>
   );

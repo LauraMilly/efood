@@ -50,8 +50,10 @@ const Grid = styled.div`
 `;
 
 const Card = styled.div`
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #e66767;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ImageWrapper = styled.div`
@@ -60,52 +62,79 @@ const ImageWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 200px;
+  height: 217px;
   object-fit: cover;
 `;
 
-const Tag = styled.span`
+const TagsContainer = styled.div`
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+`;
+
+const Tag = styled.span`
   background: #e66767;
   color: #fff;
   font-size: 12px;
-  padding: 4px 8px;
+  font-weight: 700;
+  padding: 6px 8px;
 `;
 
 const Content = styled.div`
-  padding: 16px;
+  padding: 9px;
+  flex: 1;
 `;
 
 const HeaderCard = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
 `;
 
 const Name = styled.h3`
   color: #e66767;
   font-size: 18px;
+  font-weight: 700;
+  margin: 0;
 `;
 
-const Rating = styled.span`
+const RatingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const RatingNumber = styled.span`
   color: #e66767;
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: 700;
+`;
+
+const Star = styled.svg`
+  width: 30px;
+  height: 30px;
+  fill: #ffb930;
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 20px;
+  color: #e66767;
   margin: 16px 0;
-  color: #333;
+   font-weight: 230;
 `;
 
 const Button = styled(Link)`
   display: inline-block;
   background: #e66767;
   color: #fff;
-  padding: 8px 16px;
+  padding: 6px 12px;
   font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
 `;
 
 export default function Home() {
@@ -113,62 +142,42 @@ export default function Home() {
     {
       id: 1,
       name: "Bella Tavola Italiana",
-      category: "italiana",
+      category: "Italiana",
       rating: 4.7,
       description:
-        "A paixão dos nossos chefs pela culinária italiana é evidente em cada prato.",
+        "Peça já o melhor da culinária italiana no conforto da sua casa! Massas frescas, pizzas artesanais e pratos quentes irresistíveis.",
       image:
         "https://images.unsplash.com/photo-1528605248644-14dd04022da1"
     },
     {
       id: 2,
       name: "Casa das Delícias Árabes",
-      category: "árabe",
+      category: "Árabe",
       rating: 4.8,
       description:
-        "Uma verdadeira experiência culinária do Oriente Médio.",
+        "Sabores autênticos do Oriente Médio preparados com ingredientes selecionados e muito carinho.",
       image:
         "https://images.unsplash.com/photo-1542528180-a1208c5169a5"
     },
     {
       id: 3,
-      name: "Sakura Sushi House",
-      category: "japonês",
+      name: "Hioki Sushi",
+      category: "Japonesa",
       rating: 4.9,
       description:
-        "Culinária japonesa sofisticada e autêntica.",
+        "Peça já o melhor da culinária japonesa no conforto da sua casa! Sushis frescos, sashimis deliciosos e pratos quentes irresistíveis.",
       image:
         "https://images.unsplash.com/photo-1553621042-f6e147245754"
     },
     {
       id: 4,
       name: "Cantinho Lusitano",
-      category: "português",
+      category: "Portuguesa",
       rating: 4.8,
       description:
-        "Restaurante tradicional português com receitas clássicas.",
+        "Receitas clássicas portuguesas feitas com tradição e sabor.",
       image:
         "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba"
-    },
-    {
-      id: 5,
-      name: "Piazza del Forno",
-      category: "pizzaria",
-      rating: 4.7,
-      description:
-        "Pizzas artesanais assadas em forno a lenha.",
-      image:
-        "https://images.unsplash.com/photo-1513104890138-7c749659a591"
-    },
-    {
-      id: 6,
-      name: "Jardim da Terra",
-      category: "vegano",
-      rating: 4.8,
-      description:
-        "Pratos criativos e saudáveis à base de plantas.",
-      image:
-        "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0"
     }
   ];
 
@@ -192,13 +201,21 @@ export default function Home() {
             <Card key={r.id}>
               <ImageWrapper>
                 <Image src={r.image} alt={r.name} />
-                <Tag>{r.category}</Tag>
+                <TagsContainer>
+                  <Tag>Destaque da semana</Tag>
+                  <Tag>{r.category}</Tag>
+                </TagsContainer>
               </ImageWrapper>
 
               <Content>
                 <HeaderCard>
                   <Name>{r.name}</Name>
-                  <Rating>⭐ {r.rating}</Rating>
+                  <RatingContainer>
+                    <RatingNumber>{r.rating}</RatingNumber>
+                    <Star viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21z" />
+                    </Star>
+                  </RatingContainer>
                 </HeaderCard>
 
                 <Description>{r.description}</Description>
