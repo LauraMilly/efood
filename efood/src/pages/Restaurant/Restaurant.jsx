@@ -25,10 +25,10 @@ const Overlay = styled.div`
 const BannerContent = styled.div`
   position: relative;
   z-index: 2;
-  width: 100%;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 32px 0;
+  padding: 32px 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -37,12 +37,12 @@ const BannerContent = styled.div`
 const Category = styled.span`
   font-family: "Roboto", sans-serif;
   font-weight: 100;
-  font-size: 30px;
+  font-size: 33px;
   color: #ffffff;
 `;
 
 const Title = styled.h1`
-  font-size: 35px;
+  font-size: 33,25px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
@@ -51,14 +51,13 @@ const Title = styled.h1`
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 56px 0 80px;
+  padding: 56px 32px 80px;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 360px);
+  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-  justify-content: center;
 `;
 
 const Card = styled.div`
@@ -66,7 +65,7 @@ const Card = styled.div`
   border: 6px solid #e86b6b;
   display: flex;
   flex-direction: column;
-  width: 360px;
+  width: 100%;
 `;
 
 const Image = styled.img`
