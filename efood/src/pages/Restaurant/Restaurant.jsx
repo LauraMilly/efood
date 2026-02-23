@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import HeaderRestaurant from "./HeaderRestaurant";
 import Footer from "../../components/Footer";
-
+import Modal from "../../components/ProductModal";
 const Page = styled.div`
   background: #fff8f2;
   font-family: "Poppins", sans-serif;
@@ -107,72 +108,28 @@ const Button = styled.button`
   font-weight: 700;
   cursor: pointer;
 `;
-
-
 export default function Restaurant() {
   const { id } = useParams();
+  const [restaurant, setRestaurant] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const restaurants = [
-    {
-      id: 1,
-      name: "La Dolce Vita Trattoria",
-      category: "Italiana",
-      banner:
-        "https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=1600&q=80",
-      dishes: [
-        {
-          id: 1,
-          name: "Ravioli al Tartufo Nero",
-          image:
-            "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 2,
-          name: "Spaghetti alla Carbonara",
-          image:
-            "https://images.unsplash.com/photo-1588013273468-315fd88ea34c?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 3,
-          name: "Risotto ai Funghi Porcini",
-          image:
-            "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 4,
-          name: "Ossobuco alla Milanese",
-          image:
-            "https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 5,
-          name: "Melanzane alla Parmigiana",
-          image:
-            "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          id: 6,
-          name: "Frutti di Mare Linguine",
-          image:
-            "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
-        }
-      ]
-    }
-  ];
-
-  const restaurant = restaurants.find(
-    (item) => item.id === Number(id)
-  );
-
-  const descricaoPadrao =
-    "Prato tradicional italiano preparado com ingredientes frescos e selecionados, garantindo sabor autêntico e experiência única.";
+  useEffect(() => {
+    fetch("https://api-ebac.vercel.app/api/efood/restaurantes")
+      .then((res) => res.json())
+      .then((data) => {
+        const found = data.find(
+          (item) => item.id === Number(id)
+        );
+        setRestaurant(found);
+      });
+  }, [id]);
 
   if (!restaurant) {
     return (
       <Page>
         <HeaderRestaurant />
         <Container>
-          <h2>Restaurante não encontrado</h2>
+          <h2>Carregando...</h2>
         </Container>
         <Footer />
       </Page>
@@ -182,31 +139,45 @@ export default function Restaurant() {
   return (
     <Page>
       <HeaderRestaurant />
+
       <Banner
         style={{
-          backgroundImage: `url(${restaurant.banner})`
+          backgroundImage: `url(${restaurant.capa})`
         }}
       >
         <Overlay />
         <BannerContent>
-          <Category>{restaurant.category}</Category>
-          <Title>{restaurant.name}</Title>
+          <Category>{restaurant.tipo}</Category>
+          <Title>{restaurant.titulo}</Title>
         </BannerContent>
       </Banner>
+
       <Container>
         <Grid>
-          {restaurant.dishes.map((dish) => (
+          {restaurant.cardapio.map((dish) => (
             <Card key={dish.id}>
-              <Image src={dish.image} alt={dish.name} />
+              <Image src={dish.foto} alt={dish.nome} />
               <Content>
-                <Name>{dish.name}</Name>
-                <Description>{descricaoPadrao}</Description>
-                <Button>Saiba mais</Button>
+                <Name>{dish.nome}</Name>
+                <Description>
+                  {dish.descricao.slice(0, 120)}...
+                </Description>
+                <Button onClick={() => setSelectedProduct(dish)}>
+                  Saiba mais
+                </Button>
               </Content>
             </Card>
           ))}
         </Grid>
       </Container>
+
+      {selectedProduct && (
+        <Modal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+
       <Footer />
     </Page>
   );
