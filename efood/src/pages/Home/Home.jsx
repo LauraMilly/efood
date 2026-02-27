@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../../components/Footer";
@@ -124,7 +125,6 @@ const Description = styled.p`
   line-height: 20px;
   color: #e66767;
   margin: 16px 0;
-   font-weight: 230;
 `;
 
 const Button = styled(Link)`
@@ -138,48 +138,53 @@ const Button = styled(Link)`
 `;
 
 export default function Home() {
-  const restaurants = [
-    {
-      id: 1,
-      name: "Bella Tavola Italiana",
-      category: "Italiana",
-      rating: 4.7,
-      description:
-        "Peça já o melhor da culinária italiana no conforto da sua casa! Massas frescas, pizzas artesanais e pratos quentes irresistíveis.",
-      image:
-        "https://images.unsplash.com/photo-1528605248644-14dd04022da1"
-    },
-    {
-      id: 2,
-      name: "Casa das Delícias Árabes",
-      category: "Árabe",
-      rating: 4.8,
-      description:
-        "Sabores autênticos do Oriente Médio preparados com ingredientes selecionados e muito carinho.",
-      image:
-        "https://images.unsplash.com/photo-1542528180-a1208c5169a5"
-    },
-    {
-      id: 3,
-      name: "Hioki Sushi",
-      category: "Japonesa",
-      rating: 4.9,
-      description:
-        "Peça já o melhor da culinária japonesa no conforto da sua casa! Sushis frescos, sashimis deliciosos e pratos quentes irresistíveis.",
-      image:
-        "https://images.unsplash.com/photo-1553621042-f6e147245754"
-    },
-    {
-      id: 4,
-      name: "Cantinho Lusitano",
-      category: "Portuguesa",
-      rating: 4.8,
-      description:
-        "Receitas clássicas portuguesas feitas com tradição e sabor.",
-      image:
-        "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba"
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    async function fetchRestaurants() {
+      try {
+        const response = await fetch(
+          "https://api-ebac.vercel.app/api/efood/restaurantes"
+        );
+
+        if (!response.ok) {
+          throw new Error("Erro na requisição");
+        }
+
+        const data = await response.json();
+        setRestaurants(data);
+      } catch (err) {
+        console.error("Erro ao buscar restaurantes:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     }
-  ];
+
+    fetchRestaurants();
+  }, []);
+
+  if (loading) {
+    return (
+      <Page>
+        <p style={{ textAlign: "center", padding: "40px" }}>
+          Carregando restaurantes...
+        </p>
+      </Page>
+    );
+  }
+
+  if (error) {
+    return (
+      <Page>
+        <p style={{ textAlign: "center", padding: "40px", color: "red" }}>
+          Erro ao carregar restaurantes.
+        </p>
+      </Page>
+    );
+  }
 
   return (
     <Page>
@@ -200,25 +205,24 @@ export default function Home() {
           {restaurants.map((r) => (
             <Card key={r.id}>
               <ImageWrapper>
-                <Image src={r.image} alt={r.name} />
+                <Image src={r.capa} alt={r.titulo} />
                 <TagsContainer>
-                  <Tag>Destaque da semana</Tag>
-                  <Tag>{r.category}</Tag>
+                  <Tag>{r.tipo}</Tag>
                 </TagsContainer>
               </ImageWrapper>
 
               <Content>
                 <HeaderCard>
-                  <Name>{r.name}</Name>
+                  <Name>{r.titulo}</Name>
                   <RatingContainer>
-                    <RatingNumber>{r.rating}</RatingNumber>
+                    <RatingNumber>{r.avaliacao}</RatingNumber>
                     <Star viewBox="0 0 24 24">
                       <path d="M12 17.27L18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21z" />
                     </Star>
                   </RatingContainer>
                 </HeaderCard>
 
-                <Description>{r.description}</Description>
+                <Description>{r.descricao}</Description>
 
                 <Button to={`/restaurante/${r.id}`}>
                   Saiba mais

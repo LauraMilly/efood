@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { selectCartItems } from "../../store/cartSlice";
+import { useState } from "react";
+import CartDrawer from "../../components/CartDrawer";;
 
 const Header = styled.header`
   background-image: url("https://e-food-flame-nine.vercel.app/static/media/Vector.784e90d06596c838a246.png");
@@ -42,30 +46,49 @@ const Logo = styled.img`
   height: 60px;
 `;
 
-const CartText = styled.span`
+const CartText = styled.button`
+  background: transparent;
+  border: none;
   color: #e66767;
   font-size: 22px;
   font-weight: 700;
+  cursor: pointer;
 `;
 
 export default function HeaderRestaurant() {
+  const items = useSelector(selectCartItems);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const totalQuantidade = items.reduce(
+    (acc, item) => acc + item.quantidade,
+    0
+  );
+
   return (
-    <Header>
-      <Container>
-        <Left>
-          <TextLink to="/">Restaurantes</TextLink>
-        </Left>
+    <>
+      <Header>
+        <Container>
+          <Left>
+            <TextLink to="/">Restaurantes</TextLink>
+          </Left>
 
-        <Center>
-          <Link to="/">
-            <Logo src="/efood.png" alt="efood" />
-          </Link>
-        </Center>
+          <Center>
+            <Link to="/">
+              <Logo src="/efood.png" alt="efood" />
+            </Link>
+          </Center>
 
-        <Right>
-          <CartText>0 produto(s) no carrinho</CartText>
-        </Right>
-      </Container>
-    </Header>
+          <Right>
+            <CartText onClick={() => setIsCartOpen(true)}>
+              {totalQuantidade} produto(s) no carrinho
+            </CartText>
+          </Right>
+        </Container>
+      </Header>
+
+      {isCartOpen && (
+        <CartDrawer onClose={() => setIsCartOpen(false)} />
+      )}
+    </>
   );
 }

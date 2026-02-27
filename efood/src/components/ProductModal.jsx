@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/cartSlice";
+import { toast } from "react-toastify";
 
 const Overlay = styled.div`
   position: fixed;
@@ -55,7 +58,7 @@ const Description = styled.p`
   font-size: 14px;
   line-height: 22px;
   margin-bottom: 16px;
-  fonr-weight:400;
+  font-weight: 400;
 `;
 
 const Portion = styled.p`
@@ -75,7 +78,15 @@ const Button = styled.button`
 `;
 
 export default function ProductModal({ product, onClose }) {
+  const dispatch = useDispatch();
+
   if (!product) return null;
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
+    toast.success("Produto adicionado ao carrinho!");
+    onClose();
+  };
 
   return (
     <Overlay onClick={onClose}>
@@ -98,7 +109,7 @@ export default function ProductModal({ product, onClose }) {
             {product.porcao || "Porção não informada"}
           </Portion>
 
-          <Button>
+          <Button onClick={handleAddToCart}>
             Adicionar ao carrinho - R${" "}
             {Number(product.preco || 0).toFixed(2)}
           </Button>
