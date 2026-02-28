@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../../store/cartSlice";
 import { useState } from "react";
-import CartDrawer from "../../components/CartDrawer";;
+import CartDrawer from "../../components/CartDrawer";
+import Checkout from "../../components/Checkout";
 
 const Header = styled.header`
   background-image: url("https://e-food-flame-nine.vercel.app/static/media/Vector.784e90d06596c838a246.png");
@@ -23,17 +24,9 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Left = styled.div`
-  justify-self: start;
-`;
-
-const Center = styled.div`
-  justify-self: center;
-`;
-
-const Right = styled.div`
-  justify-self: end;
-`;
+const Left = styled.div`justify-self: start;`;
+const Center = styled.div`justify-self: center;`;
+const Right = styled.div`justify-self: end;`;
 
 const TextLink = styled(Link)`
   color: #e66767;
@@ -42,9 +35,7 @@ const TextLink = styled(Link)`
   text-decoration: none;
 `;
 
-const Logo = styled.img`
-  height: 60px;
-`;
+const Logo = styled.img`height: 60px;`;
 
 const CartText = styled.button`
   background: transparent;
@@ -57,7 +48,9 @@ const CartText = styled.button`
 
 export default function HeaderRestaurant() {
   const items = useSelector(selectCartItems);
+
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   const totalQuantidade = items.reduce(
     (acc, item) => acc + item.quantidade,
@@ -87,7 +80,19 @@ export default function HeaderRestaurant() {
       </Header>
 
       {isCartOpen && (
-        <CartDrawer onClose={() => setIsCartOpen(false)} />
+        <CartDrawer
+          onClose={() => setIsCartOpen(false)}
+          openCheckout={() => {
+            setIsCartOpen(false);
+            setIsCheckoutOpen(true);
+          }}
+        />
+      )}
+
+      {isCheckoutOpen && (
+        <Checkout
+          onClose={() => setIsCheckoutOpen(false)}
+        />
       )}
     </>
   );

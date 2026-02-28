@@ -18,13 +18,13 @@ const Drawer = styled.div`
   top: 0;
   right: 0;
   width: 360px;
-  height: 100vh; /* ocupa tela toda */
+  height: 100vh;
   background: #e66767;
   padding: 32px 16px;
   display: flex;
   flex-direction: column;
   z-index: 1001;
-  overflow-y: auto; /* 🔥 scroll no drawer inteiro */
+  overflow-y: auto;
 `;
 
 const CloseButton = styled.button`
@@ -114,12 +114,29 @@ const Button = styled.button`
   font-weight: 700;
   color: #e66767;
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
-export default function CartDrawer({ onClose }) {
+export default function CartDrawer({ onClose, openCheckout }) {
   const dispatch = useDispatch();
   const items = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
+
+  const handleCheckout = () => {
+    if (!items.length) return;
+
+    // fecha carrinho
+    if (onClose) onClose();
+
+    // abre checkout se existir
+    if (typeof openCheckout === "function") {
+      openCheckout();
+    }
+  };
 
   return (
     <>
@@ -131,7 +148,7 @@ export default function CartDrawer({ onClose }) {
         <Items>
           {items.map((item) => (
             <Item key={item.id}>
-              <Img src={item.foto} alt={item.nome} />
+              <Img src={item.foto || ""} alt={item.nome} />
 
               <Info>
                 <Name>{item.nome}</Name>
@@ -155,7 +172,12 @@ export default function CartDrawer({ onClose }) {
             </span>
           </Total>
 
-          <Button>Continuar com a entrega</Button>
+          <Button
+            onClick={handleCheckout}
+            disabled={!items.length}
+          >
+            Continuar com a entrega
+          </Button>
         </Footer>
       </Drawer>
     </>
