@@ -48,7 +48,7 @@ const Input = styled.input`
   width: 100%;
   height: 32px;
   padding: 8px;
-  border: ${props => props.error ? "2px solid #ffb3b3" : "none"};
+  border: ${(props) => (props.error ? "2px solid #ffb3b3" : "none")};
   background: #f5e6d6;
   font-size: 12px;
   margin-bottom: 4px;
@@ -93,7 +93,6 @@ const Text = styled.p`
   margin-bottom: 16px;
 `;
 
-
 export default function Checkout({ onClose }) {
   const cartItems = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
@@ -120,19 +119,53 @@ export default function Checkout({ onClose }) {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
-  };
+    let { name, value } = e.target;
 
+    if (
+      name === "zipCode" ||
+      name === "number" ||
+      name === "cardNumber" ||
+      name === "cvv" ||
+      name === "month" ||
+      name === "year"
+    ) {
+      value = value.replace(/\D/g, "");
+    }
+
+    setForm({
+      ...form,
+      [name]: value
+    });
+
+    setErrors({
+      ...errors,
+      [name]: ""
+    });
+  };
 
   const validateDelivery = () => {
     const newErrors = {};
 
-    if (!form.receiver) newErrors.receiver = "Campo obrigatório";
-    if (!form.address) newErrors.address = "Campo obrigatório";
-    if (!form.city) newErrors.city = "Campo obrigatório";
-    if (!form.zipCode) newErrors.zipCode = "Campo obrigatório";
-    if (!form.number) newErrors.number = "Campo obrigatório";
+    if (!form.receiver.trim())
+      newErrors.receiver = "Informe quem irá receber";
+
+    if (!form.address.trim())
+      newErrors.address = "Informe o endereço";
+
+    if (!form.city.trim())
+      newErrors.city = "Informe a cidade";
+
+    if (!form.zipCode.trim()) {
+      newErrors.zipCode = "Informe o CEP";
+    } else if (!/^\d{8}$/.test(form.zipCode)) {
+      newErrors.zipCode = "CEP deve conter 8 números";
+    }
+
+    if (!form.number.trim()) {
+      newErrors.number = "Informe o número";
+    } else if (!/^\d+$/.test(form.number)) {
+      newErrors.number = "Número deve conter apenas números";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -141,16 +174,36 @@ export default function Checkout({ onClose }) {
   const validatePayment = () => {
     const newErrors = {};
 
-    if (!form.cardName) newErrors.cardName = "Campo obrigatório";
-    if (!form.cardNumber) newErrors.cardNumber = "Campo obrigatório";
-    if (!form.cvv) newErrors.cvv = "Campo obrigatório";
-    if (!form.month) newErrors.month = "Campo obrigatório";
-    if (!form.year) newErrors.year = "Campo obrigatório";
+    if (!form.cardName.trim())
+      newErrors.cardName = "Informe o nome no cartão";
+
+    if (!form.cardNumber.trim()) {
+      newErrors.cardNumber = "Informe o número do cartão";
+    } else if (!/^\d{16}$/.test(form.cardNumber)) {
+      newErrors.cardNumber = "Cartão deve conter 16 números";
+    }
+
+    if (!form.cvv.trim()) {
+      newErrors.cvv = "Informe o CVV";
+    } else if (!/^\d{3,4}$/.test(form.cvv)) {
+      newErrors.cvv = "CVV inválido";
+    }
+
+    if (!form.month.trim()) {
+      newErrors.month = "Informe o mês";
+    } else if (!/^(0?[1-9]|1[0-2])$/.test(form.month)) {
+      newErrors.month = "Mês inválido (1-12)";
+    }
+
+    if (!form.year.trim()) {
+      newErrors.year = "Informe o ano";
+    } else if (!/^\d{4}$/.test(form.year)) {
+      newErrors.year = "Ano inválido";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
 
   const handleCheckout = async () => {
     if (!validatePayment()) return;
@@ -214,27 +267,43 @@ export default function Checkout({ onClose }) {
             <Title>Entrega</Title>
 
             <Label>Quem irá receber</Label>
-            <Input name="receiver" onChange={handleChange} error={errors.receiver}/>
+            <Input
+              name="receiver"
+              onChange={handleChange}
+              error={errors.receiver}
+            />
             {errors.receiver && <ErrorText>{errors.receiver}</ErrorText>}
 
             <Label>Endereço</Label>
-            <Input name="address" onChange={handleChange} error={errors.address}/>
+            <Input
+              name="address"
+              onChange={handleChange}
+              error={errors.address}
+            />
             {errors.address && <ErrorText>{errors.address}</ErrorText>}
 
             <Label>Cidade</Label>
-            <Input name="city" onChange={handleChange} error={errors.city}/>
+            <Input name="city" onChange={handleChange} error={errors.city} />
             {errors.city && <ErrorText>{errors.city}</ErrorText>}
 
             <Row>
               <div>
                 <Label>CEP</Label>
-                <Input name="zipCode" onChange={handleChange} error={errors.zipCode}/>
+                <Input
+                  name="zipCode"
+                  onChange={handleChange}
+                  error={errors.zipCode}
+                />
                 {errors.zipCode && <ErrorText>{errors.zipCode}</ErrorText>}
               </div>
 
               <div>
                 <Label>Número</Label>
-                <Input name="number" onChange={handleChange} error={errors.number}/>
+                <Input
+                  name="number"
+                  onChange={handleChange}
+                  error={errors.number}
+                />
                 {errors.number && <ErrorText>{errors.number}</ErrorText>}
               </div>
             </Row>
@@ -242,11 +311,11 @@ export default function Checkout({ onClose }) {
             <Label>Complemento (opcional)</Label>
             <Input name="complement" onChange={handleChange} />
 
-            <Button onClick={() => {
-              if (validateDelivery()) {
-                setStep("payment");
-              }
-            }}>
+            <Button
+              onClick={() => {
+                if (validateDelivery()) setStep("payment");
+              }}
+            >
               Continuar com o pagamento
             </Button>
           </>
@@ -254,24 +323,32 @@ export default function Checkout({ onClose }) {
 
         {step === "payment" && (
           <>
-            <Title>
-              Pagamento - Valor a pagar R$ {total.toFixed(2)}
-            </Title>
+            <Title>Pagamento - Valor a pagar R$ {total.toFixed(2)}</Title>
 
             <Label>Nome no cartão</Label>
-            <Input name="cardName" onChange={handleChange} error={errors.cardName}/>
+            <Input
+              name="cardName"
+              onChange={handleChange}
+              error={errors.cardName}
+            />
             {errors.cardName && <ErrorText>{errors.cardName}</ErrorText>}
 
             <Row>
               <div>
                 <Label>Número do cartão</Label>
-                <Input name="cardNumber" onChange={handleChange} error={errors.cardNumber}/>
-                {errors.cardNumber && <ErrorText>{errors.cardNumber}</ErrorText>}
+                <Input
+                  name="cardNumber"
+                  onChange={handleChange}
+                  error={errors.cardNumber}
+                />
+                {errors.cardNumber && (
+                  <ErrorText>{errors.cardNumber}</ErrorText>
+                )}
               </div>
 
               <div>
                 <Label>CVV</Label>
-                <Input name="cvv" onChange={handleChange} error={errors.cvv}/>
+                <Input name="cvv" onChange={handleChange} error={errors.cvv} />
                 {errors.cvv && <ErrorText>{errors.cvv}</ErrorText>}
               </div>
             </Row>
@@ -279,13 +356,21 @@ export default function Checkout({ onClose }) {
             <Row>
               <div>
                 <Label>Mês de vencimento</Label>
-                <Input name="month" onChange={handleChange} error={errors.month}/>
+                <Input
+                  name="month"
+                  onChange={handleChange}
+                  error={errors.month}
+                />
                 {errors.month && <ErrorText>{errors.month}</ErrorText>}
               </div>
 
               <div>
                 <Label>Ano de vencimento</Label>
-                <Input name="year" onChange={handleChange} error={errors.year}/>
+                <Input
+                  name="year"
+                  onChange={handleChange}
+                  error={errors.year}
+                />
                 {errors.year && <ErrorText>{errors.year}</ErrorText>}
               </div>
             </Row>
@@ -305,13 +390,13 @@ export default function Checkout({ onClose }) {
             <Title>Pedido realizado - {orderId}</Title>
 
             <Text>
-              Estamos felizes em informar que seu pedido já está em
-              processo de preparação e, em breve, será entregue.
+              Estamos felizes em informar que seu pedido já está em processo
+              de preparação e, em breve, será entregue.
             </Text>
 
             <Text>
-              Nossos entregadores não estão autorizados a realizar
-              cobranças extras.
+              Nossos entregadores não estão autorizados a realizar cobranças
+              extras.
             </Text>
 
             <Text>
@@ -319,8 +404,7 @@ export default function Checkout({ onClose }) {
             </Text>
 
             <Text>
-              Esperamos que desfrute de uma deliciosa experiência.
-              Bom apetite!
+              Esperamos que desfrute de uma deliciosa experiência. Bom apetite!
             </Text>
 
             <Button
